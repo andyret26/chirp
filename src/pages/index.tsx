@@ -6,13 +6,13 @@ import { type RouterOutputs, api } from "@/utils/api";
 import Image from "next/image";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { LoadingPage } from "@/components/loading";
 
 dayjs.extend(relativeTime);
 
 function CreatePost() {
   const { data: sessionData } = useSession();
-  if (!sessionData) return null;
-  const { user } = sessionData;
+  const { user } = sessionData!;
 
   return (
     <div className="flex gap-3 w-full">
@@ -55,13 +55,27 @@ function PostView(props: PostWithUser) {
     </div>
   );
 }
+const Feed = () => {
+  const { data, isLoading: postsLoading } = api.posts.getAll.useQuery();
+  if (postsLoading) return <LoadingPage />;
+  if (!data) return <div>No data</div>;
+  return (
+    <div className="flex flex-col">
+      {data.map((post) => (
+        <PostView {...post} key={post.id} />
+      ))}
+    </div>
+  );
+};
 
 const Home: NextPage = () => {
-  const { data, isLoading } = api.posts.getAll.useQuery();
-  const { data: sessionData } = useSession();
+  // Start fetching
+  api.posts.getAll.useQuery();
 
-  if (isLoading) return <div>Loading...</div>;
-  if (!data) return <div>No data found</div>;
+  const { data: sessionData, status } = useSession();
+
+  if (status === "loading") return <div />;
+
   return (
     <>
       <Head>
@@ -76,11 +90,7 @@ const Home: NextPage = () => {
               ? <CreatePost />
               : <button onClick={() => void signIn()}>Sign in</button>}
           </div>
-          <div className="flex flex-col">
-            {data.map((post) => (
-              <PostView {...post} key={post.id} />
-            ))}
-          </div>
+          <Feed />
         </div>
       </main>
     </>
