@@ -37,6 +37,9 @@ const config = {
     "no-void": 0,
     "react/jsx-props-no-spreading": 0,
     "react/destructuring-assignment": 0,
+    "react/prop-types": 0,
+    "no-console": 0,
+    "import/prefer-default-export": 0,
   },
 };
 
