@@ -5,8 +5,8 @@ import {
   type DefaultSession,
 } from "next-auth";
 // import DiscordProvider from "next-auth/providers/discord";
-import OsuProvider from "next-auth/providers/osu"
-import GoogleProvider from "next-auth/providers/google"
+import OsuProvider from "next-auth/providers/osu";
+import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "@/env.mjs";
 import { prisma } from "@/server/db";
@@ -55,8 +55,8 @@ export const authOptions: NextAuthOptions = {
     }),
     OsuProvider({
       clientId: env.OSU_CLIENT_ID,
-      clientSecret: env.OSU_CLIENT_SECRET
-    })
+      clientSecret: env.OSU_CLIENT_SECRET,
+    }),
     /**
      * ...add more providers here.
      *
@@ -77,6 +77,4 @@ export const authOptions: NextAuthOptions = {
 export const getServerAuthSession = (ctx: {
   req: GetServerSidePropsContext["req"];
   res: GetServerSidePropsContext["res"];
-}) => {
-  return getServerSession(ctx.req, ctx.res, authOptions);
-};
+}) => getServerSession(ctx.req, ctx.res, authOptions);

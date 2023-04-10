@@ -16,11 +16,12 @@ datasource db {
 
 model Post {
     id       String   @id @default(cuid())
-    authorId String
     creaedAt DateTime @default(now())
     content  String
+    author   User     @relation(fields: [userId], references: [id])
+    userId   String
 
-    @@index([authorId])
+    @@index([userId])
 }
 
 // Necessary for Next auth
@@ -52,12 +53,13 @@ model Session {
 
 model User {
     id            String    @id @default(cuid())
-    name          String?
+    name          String
     email         String?   @unique
     emailVerified DateTime?
-    image         String?
+    image         String
     accounts      Account[]
     sessions      Session[]
+    Post          Post[]
 }
 
 model VerificationToken {
