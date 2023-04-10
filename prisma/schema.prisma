@@ -14,10 +14,13 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model Post {
+    id       String   @id @default(cuid())
+    authorId String
+    creaedAt DateTime @default(now())
+    content  String
+
+    @@index([authorId])
 }
 
 // Necessary for Next auth
