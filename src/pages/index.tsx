@@ -58,7 +58,7 @@ function CreatePost() {
         disabled={isPosting}
       >
         {
-          !isPosting ? <div className=" absolute top-2 right-4"><LoadingSpinner /></div> : "Chirp!"
+          isPosting ? <div className=" absolute top-2 right-4"><LoadingSpinner /></div> : "Chirp!"
         }
       </button>
     </div>
