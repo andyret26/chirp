@@ -7,12 +7,19 @@ import Image from "next/image";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { LoadingPage } from "@/components/loading";
+import { useState } from "react";
 
 dayjs.extend(relativeTime);
 
 function CreatePost() {
   const { data: sessionData } = useSession();
   const { user } = sessionData!;
+  const [input, setInput] = useState("");
+  const { mutate, isLoading: isPosting } = api.posts.create.useMutation({
+    onSuccess: () => {
+      setInput("");
+    },
+  });
 
   return (
     <div className="flex gap-3 w-full">
@@ -23,8 +30,21 @@ function CreatePost() {
         height={48}
         className="rounded-full"
       />
-      <input type="text" placeholder="Type emojis" className=" bg-transparent grow outline-none" />
-      <button className=" bg-blue-400 hover:bg-blue-500 active:bg-blue-600">Chirp</button>
+      <input
+        type="text"
+        value={input}
+        placeholder="Type emojis"
+        className=" bg-transparent grow outline-none"
+        onChange={(e) => setInput(e.target.value)}
+        onKeyUp={(e) => { if (e.key === "Enter") { mutate({ content: input }); } }}
+        disabled={isPosting}
+      />
+      <button
+        className=" bg-blue-400 hover:bg-blue-500 active:bg-blue-600"
+        onClick={() => mutate({ content: input })}
+      >
+        Chirp
+      </button>
     </div>
   );
 }
