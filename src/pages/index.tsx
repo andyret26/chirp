@@ -6,8 +6,9 @@ import { type RouterOutputs, api } from "@/utils/api";
 import Image from "next/image";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { LoadingPage } from "@/components/loading";
+import { LoadingPage, LoadingSpinner } from "@/components/loading";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 dayjs.extend(relativeTime);
 
@@ -20,6 +21,16 @@ function CreatePost() {
     onSuccess: () => {
       setInput("");
       void ctx.posts.getAll.invalidate();
+    },
+    onError: (e) => {
+      console.log(e.data);
+      const errorMessage = e.data?.zodError?.fieldErrors.content;
+
+      if (errorMessage) {
+        toast.error(errorMessage.join(", "));
+      } else {
+        toast.error("Faild to post! Please try again later.");
+      }
     },
   });
 
@@ -42,10 +53,13 @@ function CreatePost() {
         disabled={isPosting}
       />
       <button
-        className=" bg-blue-400 hover:bg-blue-500 active:bg-blue-600"
+        className=" w-20 bg-blue-400 hover:bg-blue-500 active:bg-blue-600 relative"
         onClick={() => mutate({ content: input })}
+        disabled={isPosting}
       >
-        Chirp
+        {
+          !isPosting ? <div className=" absolute top-2 right-4"><LoadingSpinner /></div> : "Chirp!"
+        }
       </button>
     </div>
   );
