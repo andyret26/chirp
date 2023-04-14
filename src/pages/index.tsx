@@ -15,9 +15,11 @@ function CreatePost() {
   const { data: sessionData } = useSession();
   const { user } = sessionData!;
   const [input, setInput] = useState("");
+  const ctx = api.useContext();
   const { mutate, isLoading: isPosting } = api.posts.create.useMutation({
     onSuccess: () => {
       setInput("");
+      void ctx.posts.getAll.invalidate();
     },
   });
 
