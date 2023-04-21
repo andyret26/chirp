@@ -8,23 +8,36 @@ import { prisma } from "@/server/db";
 import { appRouter } from "@/server/api/root";
 import superjson from "superjson";
 import { LoadingPage } from "@/components/loading";
+import { PageLayout } from "@/components/layout";
+import Image from "next/image";
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const { data: userData, isLoading } = api.profile.getUserByUsername.useQuery({ username });
   if (isLoading) return <LoadingPage />;
   if (!userData) return <div>404</div>;
-
   return (
     <>
       <Head>
         <title>{userData.name}</title>
       </Head>
-      <main className="flex justify-center h-screen">
-        <div>
-          <p>Profile</p>
-          <p>{userData.name}</p>
+      <PageLayout>
+        <div className=" h-36 border-slate-400 bg-slate-600 relative">
+          <Image
+            src={userData.image}
+            alt={`${userData.name} profile image`}
+            width={100}
+            height={100}
+            className=" -mb-[50px] absolute bottom-0 left-0 ml-4 rounded-full border-[3px] border-black"
+          />
         </div>
-      </main>
+        <div className="h-[50px]" />
+        <div className=" p-4 text-2xl font-bold">
+          {`@${userData.name}`}
+        </div>
+        <div className="border-b border-slate-400">
+
+        </div>
+      </PageLayout>
     </>
   );
 };
