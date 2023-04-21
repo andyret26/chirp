@@ -10,11 +10,26 @@ import superjson from "superjson";
 import { LoadingPage } from "@/components/loading";
 import { PageLayout } from "@/components/layout";
 import Image from "next/image";
+import { PostView } from "@/components/post";
+
+const ProfileFeed = (props: { userId: string }) => {
+  const { data: posts, isLoading } = api.posts.getPostsByUserId.useQuery({ userId: props.userId });
+  if (isLoading) return <LoadingPage />;
+  if (!posts || posts.length === 0) return <div>User has no posts</div>;
+  return (
+    <div className=" flex flex-col">
+      {posts.map((post) => (
+        <PostView {...post} key={post.id} />
+      ))}
+    </div>
+  );
+};
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const { data: userData, isLoading } = api.profile.getUserByUsername.useQuery({ username });
   if (isLoading) return <LoadingPage />;
   if (!userData) return <div>404</div>;
+
   return (
     <>
       <Head>
@@ -34,9 +49,9 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         <div className=" p-4 text-2xl font-bold">
           {`@${userData.name}`}
         </div>
-        <div className="border-b border-slate-400">
+        <div className="border-b border-slate-400" />
+        <ProfileFeed userId={userData.id} />
 
-        </div>
       </PageLayout>
     </>
   );

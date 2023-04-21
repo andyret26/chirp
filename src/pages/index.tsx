@@ -2,15 +2,15 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import { signIn, useSession } from "next-auth/react";
 
-import { type RouterOutputs, api } from "@/utils/api";
+import { api } from "@/utils/api";
 import Image from "next/image";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { LoadingPage, LoadingSpinner } from "@/components/loading";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import Link from "next/link";
 import { PageLayout } from "@/components/layout";
+import { PostView } from "@/components/post";
 
 dayjs.extend(relativeTime);
 
@@ -67,37 +67,6 @@ function CreatePost() {
   );
 }
 
-type PostWithUser = RouterOutputs["posts"]["getAll"][number];
-function PostView(props: PostWithUser) {
-  const {
-    content, author, creaedAt, id,
-  } = props;
-  const TimeFromX = dayjs(creaedAt).fromNow();
-
-  return (
-    <div className="flex  border-b border-slate-400 p-4">
-      <Link href={`/@${author.name}`}>
-        <Image
-          src={author.image}
-          alt={`${author.name}'s profile picture`}
-          width={48}
-          height={48}
-          className="rounded-full mx-4"
-        />
-      </Link>
-      <Link href={`/post/${id}`}>
-        <div className=" flex flex-col">
-          <div className="flex text-gray-400 gap-1">
-            <Link href={`/@${author.name}`}><span>{`@${author.name}`}</span></Link>
-            ·
-            <span>{TimeFromX}</span>
-          </div>
-          <span>{content}</span>
-        </div>
-      </Link>
-    </div>
-  );
-}
 const Feed = () => {
   const { data, isLoading: postsLoading } = api.posts.getAll.useQuery();
   if (postsLoading) return <LoadingPage />;
