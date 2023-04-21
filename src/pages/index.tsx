@@ -4,15 +4,11 @@ import { signIn, useSession } from "next-auth/react";
 
 import { api } from "@/utils/api";
 import Image from "next/image";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
 import { LoadingPage, LoadingSpinner } from "@/components/loading";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { PageLayout } from "@/components/layout";
 import { PostView } from "@/components/post";
-
-dayjs.extend(relativeTime);
 
 function CreatePost() {
   const { data: sessionData } = useSession();
